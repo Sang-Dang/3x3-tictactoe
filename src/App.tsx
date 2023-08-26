@@ -1,5 +1,5 @@
-import Board from './components/Board'
-import Game from './components/TicTacToe'
+import Board from '@/components/Board'
+import Game from '@/components/TicTacToe'
 
 export default function App() {
     return (

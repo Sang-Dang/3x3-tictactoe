@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import useTicTacToe from '../hooks/useTicTacToe'
-import Square from './Square'
-import { cn } from '../lib/utils'
+import useTicTacToe from '@/hooks/useTicTacToe'
+import Square from '@/components/Square'
+import { cn } from '@/lib/utils'
 
 export default function Board() {
     const { squaresArray, handleSquareClick, winner, resetBoard } = useTicTacToe()

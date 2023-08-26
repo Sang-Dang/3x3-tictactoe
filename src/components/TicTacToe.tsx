@@ -63,16 +63,11 @@ export default function Game() {
     }
 
     function handleSquareClick(arrayIndex: number) {
-        if (squaresArray[arrayIndex] === ' ') {
+        if (winner === undefined && squaresArray[arrayIndex] === ' ') {
             squaresArray[arrayIndex] = currentPlayer
             setSquaresArray(squaresArray)
             setCurrentPlayer(currentPlayer === 'x' ? 'o' : 'x')
-
-            const result = calculateWinner()
-            console.log(result)
-            if (result) {
-                setWinner(result)
-            }
+            setWinner(calculateWinner())
         }
     }
 

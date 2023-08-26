@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import useTicTacToe from '../hooks/useTicTacToe'
 import Square from './Square'
+import { cn } from '../lib/utils'
 
 export default function Board() {
     const { squaresArray, handleSquareClick, winner, resetBoard } = useTicTacToe()
@@ -8,7 +9,13 @@ export default function Board() {
     useEffect(() => {}, [squaresArray])
 
     return (
-        <main className="grid h-screen w-screen place-items-center">
+        <main
+            className={cn(
+                'grid h-screen w-screen place-items-center bg-white transition-all duration-100',
+                winner === 'x' && 'bg-red-50',
+                winner === 'o' && 'bg-blue-50'
+            )}
+        >
             <section>
                 <header className="mb-5">
                     <h1 className="text-center text-4xl font-extrabold">Tic Tac Toe</h1>
@@ -31,6 +38,8 @@ export default function Board() {
                     </div>
                 </div>
                 <div className="mt-5 flex items-center justify-between gap-3">
+                    {/* <button>Settings</button>
+                    <button>History</button> */}
                     <div className="block h-full w-full bg-slate-200 p-1 px-3">
                         {winner === 'draw' ? (
                             "It's a draw!"
@@ -43,7 +52,7 @@ export default function Board() {
                         )}
                     </div>
                     <button
-                        className="w-16 bg-red-500 p-1 text-white disabled:bg-red-500/10"
+                        className="w-16 bg-red-500 p-1 text-white transition-all hover:bg-red-500/80 disabled:bg-red-500/10"
                         onClick={resetBoard}
                         disabled={squaresArray.every((val) => val === ' ')}
                     >

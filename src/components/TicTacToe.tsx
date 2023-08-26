@@ -3,7 +3,7 @@ import Board from './Board'
 
 type gameContextProps = {
     squaresArray: squareValues[]
-    winner: playerValues | undefined
+    winner: winnerValues
     handleSquareClick: (arrayIndex: number) => void
     resetBoard: () => void
 }
@@ -29,7 +29,7 @@ export default function Game() {
     const [currentPlayer, setCurrentPlayer] = useState<playerValues>(
         defaultGameValues.currentPlayer
     )
-    const [winner, setWinner] = useState<playerValues | undefined>()
+    const [winner, setWinner] = useState<winnerValues>()
 
     function resetBoard() {
         setSquaresArray(new Array<squareValues>(9).fill(' '))
@@ -37,7 +37,7 @@ export default function Game() {
         setWinner(undefined)
     }
 
-    function calculateWinner() {
+    function calculateWinner(): winnerValues {
         const winningPositions = [
             [0, 4, 8],
             [2, 4, 6],
@@ -55,11 +55,11 @@ export default function Game() {
                 squaresArray[a] === squaresArray[b] &&
                 squaresArray[a] === squaresArray[c]
             ) {
-                return true
+                return squaresArray[a] as winnerValues
             }
         }
 
-        return false
+        return squaresArray.includes(' ') ? undefined : 'draw'
     }
 
     function handleSquareClick(arrayIndex: number) {
@@ -68,8 +68,10 @@ export default function Game() {
             setSquaresArray(squaresArray)
             setCurrentPlayer(currentPlayer === 'x' ? 'o' : 'x')
 
-            if (calculateWinner()) {
-                setWinner(currentPlayer)
+            const result = calculateWinner()
+            console.log(result)
+            if (result) {
+                setWinner(result)
             }
         }
     }

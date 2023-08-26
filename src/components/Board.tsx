@@ -9,7 +9,9 @@ export default function Board() {
 
     return (
         <main>
-            <div>{!!winner && `${winner} has won!`}</div>
+            <div>
+                {winner === 'draw' ? "It's a draw!" : !!winner && `${winner} has won the game!`}
+            </div>
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                     <Square value={squaresArray[0]} handleClick={() => handleSquareClick(0)} />

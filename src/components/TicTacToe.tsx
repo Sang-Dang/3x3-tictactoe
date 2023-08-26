@@ -5,22 +5,22 @@ type gameContextProps = {
     winner: winnerValues
     handleSquareClick: (arrayIndex: number) => void
     resetBoard: () => void
+    history: historyEntry[]
 }
 
-const defaultGameValues = {
+const defaultValues = Object.freeze({
     squaresArray: new Array<squareValues>(9).fill(' '),
-    setSquaresArray: () => {},
     currentPlayer: 'x' as playerValues,
-    setCurrentPlayer: () => {},
-    setWinner: () => {}
-}
+    winner: undefined
+})
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const gameContext = createContext<gameContextProps>({
-    squaresArray: defaultGameValues.squaresArray,
+    squaresArray: defaultValues.squaresArray,
     winner: undefined,
     handleSquareClick: () => {},
-    resetBoard: () => {}
+    resetBoard: () => {},
+    history: []
 })
 
 type GameProps = {
@@ -28,11 +28,10 @@ type GameProps = {
 }
 
 export default function Game({ children }: GameProps) {
-    const [squaresArray, setSquaresArray] = useState<squareValues[]>(defaultGameValues.squaresArray)
-    const [currentPlayer, setCurrentPlayer] = useState<playerValues>(
-        defaultGameValues.currentPlayer
-    )
+    const [squaresArray, setSquaresArray] = useState<squareValues[]>(defaultValues.squaresArray)
+    const [currentPlayer, setCurrentPlayer] = useState<playerValues>(defaultValues.currentPlayer)
     const [winner, setWinner] = useState<winnerValues>()
+    const [history, setHistory] = useState<historyEntry[]>([])
 
     function calculateWinner(currentArray: squareValues[]): winnerValues {
         const winningPositions = [
@@ -45,7 +44,6 @@ export default function Game({ children }: GameProps) {
             [1, 4, 7],
             [2, 5, 8]
         ]
-        console.log(currentArray)
         for (const [a, b, c] of winningPositions) {
             if (
                 currentArray[a] !== ' ' &&
@@ -65,22 +63,37 @@ export default function Game({ children }: GameProps) {
                 const newSquaresArray = [...squaresArray]
                 newSquaresArray[arrayIndex] = currentPlayer
 
+                const isWinner = calculateWinner(newSquaresArray)
+
                 setSquaresArray(newSquaresArray)
                 setCurrentPlayer(currentPlayer === 'x' ? 'o' : 'x')
-                setWinner(calculateWinner(newSquaresArray))
+                setWinner(isWinner)
+
+                setHistory((prev) => {
+                    prev.push({
+                        createdAt: new Date(),
+                        player: currentPlayer,
+                        selectedSquare: arrayIndex,
+                        winStatus: isWinner
+                    })
+                    return prev
+                })
             }
         },
         [currentPlayer, squaresArray, winner]
     )
 
     const resetBoard = useCallback(() => {
-        setSquaresArray(new Array<squareValues>(9).fill(' '))
-        setCurrentPlayer('x')
-        setWinner(undefined)
+        setSquaresArray(defaultValues.squaresArray)
+        setCurrentPlayer(defaultValues.currentPlayer)
+        setWinner(defaultValues.winner)
+        setHistory([])
     }, [])
 
     return (
-        <gameContext.Provider value={{ squaresArray, handleSquareClick, winner, resetBoard }}>
+        <gameContext.Provider
+            value={{ squaresArray, handleSquareClick, winner, resetBoard, history }}
+        >
             {children}
         </gameContext.Provider>
     )
